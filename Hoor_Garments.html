@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hoor Garments — Baby & Kids Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<style>
+:root {
+  --pink:#FF6B9D; --blue:#4FC3F7; --yellow:#FFD54F;
+  --purple:#CE93D8; --green:#81C784; --orange:#FFB74D;
+  --mint:#80DEEA; --bg:#FFF8F0; --white:#fff;
+  --dark:#2D2640; --text:#4A4260; --light:#F3EFF8;
+  --wa:#25D366; --radius:20px;
+  --shadow:0 8px 32px rgba(45,38,64,.10);
+  --shadow-hover:0 16px 48px rgba(45,38,64,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* HEADER */
+header{background:#fff;box-shadow:0 2px 20px rgba(0,0,0,.08);position:sticky;top:0;z-index:100;padding:0 1.5rem}
+.hdr{max-width:1280px;margin:0 auto;display:flex;align-items:center;height:68px;gap:1rem}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0}
+.logo-icon{width:44px;height:44px;background:linear-gradient(135deg,var(--pink),var(--purple));border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 4px 12px rgba(255,107,157,.35)}
+.logo-main{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--dark);line-height:1}
+.logo-sub{font-size:.68rem;font-weight:700;color:var(--pink);letter-spacing:.08em;text-transform:uppercase}
+.search-wrap{flex:1;max-width:380px;position:relative}
+.search-wrap input{width:100%;padding:.55rem 1rem .55rem 2.6rem;border:2px solid #EDE8F5;border-radius:50px;font-family:'Nunito',sans-serif;font-size:.88rem;background:var(--light);outline:none;transition:.2s}
+.search-wrap input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,107,157,.15)}
+.s-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:#aaa}
+#sResults{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border-radius:14px;box-shadow:var(--shadow-hover);max-height:300px;overflow-y:auto;display:none;z-index:300}
+#sResults.open{display:block}
+.sri{padding:.65rem 1rem;cursor:pointer;display:flex;align-items:center;gap:.7rem;border-bottom:1px solid #f5effe;transition:.15s}
+.sri:last-child{border:none}
+.sri:hover{background:var(--light)}
+.sri-em{font-size:1.4rem}
+.sri-info strong{display:block;font-size:.88rem;color:var(--dark)}
+.sri-info span{font-size:.75rem;color:#aaa}
+nav{display:flex;align-items:center;gap:.2rem}
+nav a{text-decoration:none;font-weight:700;font-size:.82rem;color:var(--text);padding:.4rem .85rem;border-radius:50px;transition:.2s;white-space:nowrap}
+nav a:hover,nav a.active{background:var(--light);color:var(--pink)}
+.cart-btn{display:flex;align-items:center;gap:.35rem;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border:none;border-radius:50px;padding:.45rem 1rem;font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap;margin-left:.25rem}
+.cart-btn:hover{opacity:.88;transform:scale(1.03)}
+.cart-count{background:#fff;color:var(--pink);border-radius:50px;padding:0 .35rem;font-size:.72rem;font-weight:800}
+
+/* PAGES */
+.page{display:none;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#FFF0F7,#F0F7FF,#FFFFF0);padding:3.5rem 1.5rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,107,157,.07) 1px,transparent 1px);background-size:30px 30px}
+.floats{position:absolute;inset:0;pointer-events:none}
+.fl{position:absolute;font-size:1.8rem;animation:flAnim 6s ease-in-out infinite;opacity:.55}
+.fl:nth-child(1){top:8%;left:4%;animation-delay:0s}
+.fl:nth-child(2){top:15%;right:6%;animation-delay:1s}
+.fl:nth-child(3){bottom:12%;left:10%;animation-delay:2s}
+.fl:nth-child(4){bottom:18%;right:5%;animation-delay:.5s}
+.fl:nth-child(5){top:48%;left:2%;animation-delay:1.5s}
+.fl:nth-child(6){top:38%;right:3%;animation-delay:2.5s}
+@keyframes flAnim{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(8deg)}}
+.hero-inner{position:relative;z-index:1}
+.badge{display:inline-block;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .9rem;border-radius:50px;margin-bottom:.9rem}
+.hero h1{font-family:'Baloo 2',cursive;font-size:clamp(2rem,5vw,3.5rem);font-weight:800;color:var(--dark);line-height:1.1;margin-bottom:.9rem}
+.hero h1 span{color:var(--pink)}
+.hero p{font-size:1rem;color:var(--text);max-width:500px;margin:0 auto 1.8rem;line-height:1.6}
+.stats{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap}
+.stat{background:#fff;padding:.65rem 1.3rem;border-radius:14px;box-shadow:var(--shadow);text-align:center}
+.stat-n{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--pink);line-height:1}
+.stat-l{font-size:.75rem;color:#aaa;font-weight:600}
+
+/* CONTAINER */
+.container{max-width:1280px;margin:0 auto;padding:2.5rem 1.5rem}
+
+/* SECTION TITLE */
+.sec-title{text-align:center;margin-bottom:2rem}
+.sec-title h2{font-family:'Baloo 2',cursive;font-size:clamp(1.5rem,3vw,2rem);font-weight:800;color:var(--dark)}
+.sec-title p{color:#aaa;font-size:.9rem;margin-top:.3rem}
+.tline{width:56px;height:4px;background:linear-gradient(90deg,var(--pink),var(--purple));border-radius:2px;margin:.7rem auto 0}
+
+/* NAV TABS (age + gender) */
+.age-tabs,.gender-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.age-tab,.gender-tab{padding:.45rem 1.1rem;border-radius:50px;border:2px solid #EDE8F5;background:#fff;font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:.2s;color:var(--text)}
+.age-tab:hover{border-color:var(--purple);color:var(--purple)}
+.age-tab.active{background:linear-gradient(135deg,var(--purple),var(--pink));border-color:transparent;color:#fff}
+.gender-tab{display:flex;align-items:center;gap:.4rem;padding:.45rem 1.1rem}
+.gender-tab:hover{border-color:var(--blue);color:var(--blue)}
+.gender-tab.active{background:linear-gradient(135deg,var(--blue),var(--purple));border-color:transparent;color:#fff}
+
+/* FILTER BAR */
+.filter-bar{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:1.75rem;background:#fff;padding:.85rem 1.1rem;border-radius:var(--radius);box-shadow:var(--shadow)}
+.fl-label{font-weight:700;font-size:.82rem;color:var(--dark);white-space:nowrap}
+.fl-btn{padding:.35rem .9rem;border-radius:50px;border:2px solid #EDE8F5;background:#fff;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;transition:.2s;color:var(--text)}
+.fl-btn:hover,.fl-btn.active{background:var(--pink);border-color:var(--pink);color:#fff}
+.fl-sep{width:1px;height:22px;background:#EDE8F5;flex-shrink:0}
+
+/* PRODUCT GRID */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.1rem}
+
+/* PRODUCT CARD */
+.pcard{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:.25s;position:relative}
+.pcard:hover{transform:translateY(-5px);box-shadow:var(--shadow-hover)}
+.pimg{height:165px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative}
+.pbadge{position:absolute;top:.6rem;left:.6rem;background:var(--orange);color:#fff;font-size:.68rem;font-weight:700;padding:.18rem .5rem;border-radius:50px;text-transform:uppercase;letter-spacing:.05em}
+.pbadge.trending{background:linear-gradient(135deg,var(--orange),var(--pink))}
+.pinfo{padding:.9rem}
+.pname{font-weight:800;font-size:.9rem;color:var(--dark);margin-bottom:.2rem}
+.pmeta{font-size:.75rem;color:#bbb;margin-bottom:.55rem}
+.cdots{display:flex;gap:.3rem;margin-bottom:.7rem}
+.cdot{width:15px;height:15px;border-radius:50%;border:2px solid rgba(0,0,0,.1);cursor:pointer;transition:.15s}
+.cdot:hover{transform:scale(1.3)}
+.pfooter{display:flex;align-items:center;justify-content:space-between;gap:.4rem;flex-wrap:wrap}
+.price{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;color:var(--pink)}
+.price-old{font-size:.78rem;color:#ccc;text-decoration:line-through;margin-left:.3rem;font-weight:600}
+.btn-row{display:flex;gap:.4rem;margin-top:.7rem}
+.add-btn{flex:1;background:var(--light);color:var(--purple);border:none;border-radius:10px;padding:.4rem .6rem;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;transition:.2s;text-align:center}
+.add-btn:hover{background:var(--purple);color:#fff}
+.wa-btn{flex:2;display:flex;align-items:center;justify-content:center;gap:.35rem;background:var(--wa);color:#fff;border:none;border-radius:10px;padding:.4rem .7rem;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;transition:.2s;text-decoration:none}
+.wa-btn:hover{background:#1ebe57;transform:scale(1.03)}
+.wa-icon{font-size:1rem}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:3.5rem 1rem;color:#ccc;grid-column:1/-1}
+.empty .ei{font-size:3.5rem;margin-bottom:.75rem}
+
+/* BREADCRUMB */
+.bc{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:#bbb;margin-bottom:1.25rem}
+.bc span{cursor:pointer;transition:.15s}.bc span:hover{color:var(--pink)}
+.bc .sep{color:#ddd}.bc .cur{color:var(--dark);font-weight:700}
+
+/* CART PAGE */
+.cart-empty{text-align:center;padding:5rem 2rem}
+.cart-empty .ce-icon{font-size:5rem;margin-bottom:1rem}
+.cart-empty h3{font-family:'Baloo 2',cursive;font-size:1.6rem;color:var(--dark);margin-bottom:.5rem}
+.cart-empty p{color:#aaa;margin-bottom:2rem}
+.cart-table{width:100%;border-collapse:collapse;margin-bottom:2rem}
+.cart-table th{text-align:left;padding:.75rem 1rem;font-size:.82rem;font-weight:700;color:#aaa;border-bottom:2px solid #f0eaf8;background:#fff}
+.cart-table td{padding:.9rem 1rem;border-bottom:1px solid #f7f2fd;background:#fff;font-size:.88rem}
+.cart-table tr:hover td{background:var(--light)}
+.ct-name{font-weight:700;color:var(--dark)}
+.ct-price{font-family:'Baloo 2',cursive;font-weight:800;color:var(--pink)}
+.ct-qty{display:flex;align-items:center;gap:.5rem}
+.qty-btn{width:26px;height:26px;border-radius:50%;border:2px solid #EDE8F5;background:#fff;font-size:.9rem;cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;transition:.15s}
+.qty-btn:hover{background:var(--pink);border-color:var(--pink);color:#fff}
+.ct-remove{background:none;border:none;color:#ffaabb;cursor:pointer;font-size:1.1rem;transition:.15s}
+.ct-remove:hover{color:#ff2255;transform:scale(1.2)}
+.cart-summary{background:#fff;border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);max-width:420px;margin-left:auto}
+.cs-row{display:flex;justify-content:space-between;margin-bottom:.6rem;font-size:.9rem}
+.cs-row.total{font-weight:800;font-size:1.1rem;color:var(--dark);border-top:2px solid #f0eaf8;padding-top:.75rem;margin-top:.5rem}
+.wa-order-btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;background:var(--wa);color:#fff;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;transition:.2s;margin-top:1rem}
+.wa-order-btn:hover{background:#1ebe57;transform:scale(1.02)}
+.wa-order-btn .wao-icon{font-size:1.4rem}
+.clear-btn{display:block;width:100%;background:var(--light);color:var(--text);border:none;border-radius:14px;padding:.75rem;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:.6rem}
+.clear-btn:hover{background:#ffe0ee;color:var(--pink)}
+
+/* FEATURED SECTION on home */
+.home-shop-btn{display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border:none;border-radius:50px;padding:.65rem 1.5rem;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:1.5rem}
+.home-shop-btn:hover{opacity:.88;transform:scale(1.03)}
+
+/* PAGE HEADER ROW */
+.ph-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.75rem}
+.ph-row h2{font-family:'Baloo 2',cursive;font-size:1.45rem;font-weight:800;color:var(--dark)}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--dark);color:#fff;padding:.8rem 1.3rem;border-radius:14px;font-size:.88rem;font-weight:700;box-shadow:0 8px 32px rgba(0,0,0,.25);transform:translateY(80px);opacity:0;transition:.3s;z-index:999;display:flex;align-items:center;gap:.5rem}
+.toast.show{transform:none;opacity:1}
+
+/* RESPONSIVE */
+@media(max-width:820px){nav{display:none}}
+@media(max-width:520px){
+  .search-wrap{max-width:180px}
+  .pgrid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:400px){
+  .search-wrap{display:none}
+  .pgrid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="hdr">
+    <a class="logo" href="#" onclick="showPage('home')">
+      <div class="logo-icon">🌙</div>
+      <div>
+        <div class="logo-main">Hoor Garments</div>
+        <div class="logo-sub">Baby & Kids Store</div>
+      </div>
+    </a>
+
+    <div class="search-wrap">
+      <span class="s-icon">🔍</span>
+      <input type="text" id="sInput" placeholder="Search products..." oninput="doSearch(this.value)" onfocus="openSR()" onblur="setTimeout(closeSR,180)">
+      <div id="sResults"></div>
+    </div>
+
+    <nav>
+      <a href="#" onclick="showPage('home')" id="nav-home" class="active">🏠 Home</a>
+      <a href="#" onclick="showPage('garments')" id="nav-garments">👗 Garments</a>
+      <a href="#" onclick="showPage('toys')" id="nav-toys">🧸 Toys</a>
+      <a href="#" onclick="showPage('accessories')" id="nav-accessories">🎒 Accessories</a>
+    </nav>
+
+    <button class="cart-btn" onclick="showPage('cart')">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══════════════════════════════════════
+     HOME PAGE
+═══════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <section class="hero">
+    <div class="floats">
+      <span class="fl">🧸</span><span class="fl">⭐</span>
+      <span class="fl">🎀</span><span class="fl">🚀</span>
+      <span class="fl">🌈</span><span class="fl">🦋</span>
+    </div>
+    <div class="hero-inner">
+      <div class="badge">✨ Pakistan's Favourite Baby Store</div>
+      <h1>Everything for Your<br><span>Little Star</span> 🌙</h1>
+      <p>Garments, Toys & Accessories for babies and kids of all ages. Quality products at the best prices!</p>
+      <div class="stats">
+        <div class="stat"><div class="stat-n">500+</div><div class="stat-l">Products</div></div>
+        <div class="stat"><div class="stat-n">0–12</div><div class="stat-l">Age Range</div></div>
+        <div class="stat"><div class="stat-n">3</div><div class="stat-l">Categories</div></div>
+        <div class="stat"><div class="stat-n">★ 4.9</div><div class="stat-l">Rating</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <!-- All Products preview -->
+    <div class="sec-title">
+      <h2>🛍️ All Products</h2>
+      <p>Browse everything in one place</p>
+      <div class="tline"></div>
+    </div>
+    <div class="pgrid" id="homeGrid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     GARMENTS
+═══════════════════════════════════════ -->
+<div id="page-garments" class="page">
+  <div class="container">
+    <div class="bc">
+      <span onclick="showPage('home')">🏠 Home</span>
+      <span class="sep">›</span>
+      <span class="cur">👗 Garments</span>
+    </div>
+    <div class="sec-title">
+      <h2>👗 Baby & Kids Garments</h2>
+      <p>Comfortable, stylish clothing for every age</p>
+      <div class="tline"></div>
+    </div>
+
+    <div class="age-tabs" id="g-age-tabs">
+      <button class="age-tab active" onclick="setAge('garments','all',this)">All Ages</button>
+      <button class="age-tab" onclick="setAge('garments','baby',this)">🍼 Baby (0–2 yrs)</button>
+      <button class="age-tab" onclick="setAge('garments','kids',this)">🎨 Kids (3–8 yrs)</button>
+      <button class="age-tab" onclick="setAge('garments','tween',this)">🌟 Pre-Teen (9–12 yrs)</button>
+    </div>
+
+    <div class="gender-tabs" id="g-gender-tabs">
+      <button class="gender-tab active" onclick="setGender('garments','all',this)">👶 All</button>
+      <button class="gender-tab" onclick="setGender('garments','boy',this)">👦 Boys</button>
+      <button class="gender-tab" onclick="setGender('garments','girl',this)">👧 Girls</button>
+    </div>
+
+    <div class="filter-bar">
+      <span class="fl-label">Price:</span>
+      <button class="fl-btn active" onclick="setPrice('garments','all',this)">All</button>
+      <button class="fl-btn" onclick="setPrice('garments','low',this)">Under Rs.500</button>
+      <button class="fl-btn" onclick="setPrice('garments','mid',this)">Rs.500–1000</button>
+      <button class="fl-btn" onclick="setPrice('garments','high',this)">Rs.1000+</button>
+      <div class="fl-sep"></div>
+      <span class="fl-label">Sort:</span>
+      <button class="fl-btn active" onclick="setSort('garments','default',this)">Default</button>
+      <button class="fl-btn" onclick="setSort('garments','lh',this)">Price ↑</button>
+      <button class="fl-btn" onclick="setSort('garments','hl',this)">Price ↓</button>
+    </div>
+
+    <div class="pgrid" id="garmentsGrid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     TOYS
+═══════════════════════════════════════ -->
+<div id="page-toys" class="page">
+  <div class="container">
+    <div class="bc">
+      <span onclick="showPage('home')">🏠 Home</span>
+      <span class="sep">›</span>
+      <span class="cur">🧸 Toys & Games</span>
+    </div>
+    <div class="sec-title">
+      <h2>🧸 Toys & Games</h2>
+      <p>Safe, fun & educational toys for every child</p>
+      <div class="tline"></div>
+    </div>
+
+    <div class="age-tabs" id="t-age-tabs">
+      <button class="age-tab active" onclick="setAge('toys','all',this)">All Ages</button>
+      <button class="age-tab" onclick="setAge('toys','baby',this)">🍼 Baby (0–2 yrs)</button>
+      <button class="age-tab" onclick="setAge('toys','kids',this)">🎨 Kids (3–8 yrs)</button>
+      <button class="age-tab" onclick="setAge('toys','tween',this)">🌟 Pre-Teen (9–12 yrs)</button>
+    </div>
+
+    <div class="gender-tabs" id="t-gender-tabs">
+      <button class="gender-tab active" onclick="setGender('toys','all',this)">👶 All</button>
+      <button class="gender-tab" onclick="setGender('toys','boy',this)">👦 Boys</button>
+      <button class="gender-tab" onclick="setGender('toys','girl',this)">👧 Girls</button>
+    </div>
+
+    <div class="filter-bar">
+      <span class="fl-label">Price:</span>
+      <button class="fl-btn active" onclick="setPrice('toys','all',this)">All</button>
+      <button class="fl-btn" onclick="setPrice('toys','low',this)">Under Rs.500</button>
+      <button class="fl-btn" onclick="setPrice('toys','mid',this)">Rs.500–1500</button>
+      <button class="fl-btn" onclick="setPrice('toys','high',this)">Rs.1500+</button>
+      <div class="fl-sep"></div>
+      <span class="fl-label">Sort:</span>
+      <button class="fl-btn active" onclick="setSort('toys','default',this)">Default</button>
+      <button class="fl-btn" onclick="setSort('toys','lh',this)">Price ↑</button>
+      <button class="fl-btn" onclick="setSort('toys','hl',this)">Price ↓</button>
+    </div>
+
+    <div class="pgrid" id="toysGrid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ACCESSORIES
+═══════════════════════════════════════ -->
+<div id="page-accessories" class="page">
+  <div class="container">
+    <div class="bc">
+      <span onclick="showPage('home')">🏠 Home</span>
+      <span class="sep">›</span>
+      <span class="cur">🎒 Accessories</span>
+    </div>
+    <div class="sec-title">
+      <h2>🎒 Baby & Kids Accessories</h2>
+      <p>Complete your child's look with our accessories</p>
+      <div class="tline"></div>
+    </div>
+
+    <div class="age-tabs" id="a-age-tabs">
+      <button class="age-tab active" onclick="setAge('accessories','all',this)">All Ages</button>
+      <button class="age-tab" onclick="setAge('accessories','baby',this)">🍼 Baby (0–2 yrs)</button>
+      <button class="age-tab" onclick="setAge('accessories','kids',this)">🎨 Kids (3–8 yrs)</button>
+      <button class="age-tab" onclick="setAge('accessories','tween',this)">🌟 Pre-Teen (9–12 yrs)</button>
+    </div>
+
+    <div class="gender-tabs" id="a-gender-tabs">
+      <button class="gender-tab active" onclick="setGender('accessories','all',this)">👶 All</button>
+      <button class="gender-tab" onclick="setGender('accessories','boy',this)">👦 Boys</button>
+      <button class="gender-tab" onclick="setGender('accessories','girl',this)">👧 Girls</button>
+    </div>
+
+    <div class="filter-bar">
+      <span class="fl-label">Price:</span>
+      <button class="fl-btn active" onclick="setPrice('accessories','all',this)">All</button>
+      <button class="fl-btn" onclick="setPrice('accessories','low',this)">Under Rs.300</button>
+      <button class="fl-btn" onclick="setPrice('accessories','mid',this)">Rs.300–800</button>
+      <button class="fl-btn" onclick="setPrice('accessories','high',this)">Rs.800+</button>
+      <div class="fl-sep"></div>
+      <span class="fl-label">Sort:</span>
+      <button class="fl-btn active" onclick="setSort('accessories','default',this)">Default</button>
+      <button class="fl-btn" onclick="setSort('accessories','lh',this)">Price ↑</button>
+      <button class="fl-btn" onclick="setSort('accessories','hl',this)">Price ↓</button>
+    </div>
+
+    <div class="pgrid" id="accessoriesGrid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     CART PAGE
+═══════════════════════════════════════ -->
+<div id="page-cart" class="page">
+  <div class="container">
+    <div class="bc">
+      <span onclick="showPage('home')">🏠 Home</span>
+      <span class="sep">›</span>
+      <span class="cur">🛒 My Cart</span>
+    </div>
+    <div class="sec-title">
+      <h2>🛒 My Cart</h2>
+      <p>Review your items and place order on WhatsApp</p>
+      <div class="tline"></div>
+    </div>
+    <div id="cartContent"></div>
+  </div>
+</div>
+
+</main>
+
+<footer style="background:var(--dark);color:#ccc;padding:2.5rem 1.5rem;text-align:center;margin-top:2rem">
+  <div style="font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:#fff;margin-bottom:.4rem">🌙 Hoor Garments</div>
+  <div style="font-size:.85rem;color:#888;margin-bottom:1.25rem">Baby & Kids Store — Everything for Your Little Star</div>
+  <div style="display:flex;justify-content:center;align-items:center;gap:.75rem;margin-bottom:1.25rem">
+    <a href="https://wa.me/923059218013" target="_blank" style="display:flex;align-items:center;gap:.4rem;background:var(--wa);color:#fff;text-decoration:none;padding:.5rem 1.2rem;border-radius:50px;font-weight:700;font-size:.85rem">📱 WhatsApp Us</a>
+  </div>
+  <div style="font-size:.75rem;color:#555">© 2025 Hoor Garments. All rights reserved. 💕</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════
+// PRODUCT DATA — Ab Supabase se aata hai
+// ════════════════════════════════════════════
+const WA = '923059218013';
+
+const DATA = { garments: [], toys: [], accessories: [] };
+let allProducts = [];
+
+// Cloudinary image URL banane ka helper
+function productImageUrl(p) {
+  if (p.image_url) return p.image_url;
+  if (p.image_public_id) {
+    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${p.image_public_id}`;
+  }
+  return 'https://placehold.co/300x300/F3EFF8/CE93D8?text=No+Image';
+}
+
+async function loadProductsFromSupabase() {
+  const { data, error } = await supabaseClient
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Supabase error:', error);
+    ['homeGrid','garmentsGrid','toysGrid','accessoriesGrid'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="ei">⚠️</div><p>Products load nahi ho sakay. config.js check karein.</p></div>`;
+    });
+    return;
+  }
+
+  const products = (data||[]).map(p => ({
+    id: p.id,
+    name: p.name,
+    age: p.age_group,
+    gender: p.gender,
+    price: Number(p.price),
+    oldPrice: p.old_price ? Number(p.old_price) : null,
+    image: productImageUrl(p),
+    category: p.category
+  }));
+
+  DATA.garments = products.filter(p => p.category === 'garments');
+  DATA.toys = products.filter(p => p.category === 'toys');
+  DATA.accessories = products.filter(p => p.category === 'accessories');
+  allProducts = products;
+
+  renderHome();
+}
+
+// ════════════════════════════════════════════
+// CART STATE
+// ════════════════════════════════════════════
+let cart = [];
+
+function addToCart(id, name, price) {
+  const existing = cart.find(i => i.id === id);
+  if (existing) { existing.qty++; }
+  else { cart.push({id,name,price,qty:1}); }
+  updateCartCount();
+  showToast('🛒 Added: ' + name);
+}
+
+function updateCartCount() {
+  const total = cart.reduce((s,i) => s+i.qty, 0);
+  document.getElementById('cartCount').textContent = total;
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(i => i.id !== id);
+  updateCartCount();
+  renderCart();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+  updateCartCount();
+  renderCart();
+}
+
+function renderCart() {
+  const el = document.getElementById('cartContent');
+  if (!cart.length) {
+    el.innerHTML = `
+      <div class="cart-empty">
+        <div class="ce-icon">🛒</div>
+        <h3>Cart is Empty</h3>
+        <p>Add some products to get started!</p>
+        <button class="home-shop-btn" onclick="showPage('garments')">Shop Now 👗</button>
+      </div>`;
+    return;
+  }
+
+  const subtotal = cart.reduce((s,i) => s + i.price*i.qty, 0);
+  const rows = cart.map(i => `
+    <tr>
+      <td class="ct-name">${i.name}</td>
+      <td class="ct-price">Rs.${i.price}</td>
+      <td>
+        <div class="ct-qty">
+          <button class="qty-btn" onclick="changeQty('${i.id}',-1)">−</button>
+          <strong>${i.qty}</strong>
+          <button class="qty-btn" onclick="changeQty('${i.id}',1)">+</button>
+        </div>
+      </td>
+      <td class="ct-price">Rs.${i.price*i.qty}</td>
+      <td><button class="ct-remove" onclick="removeFromCart('${i.id}')">🗑️</button></td>
+    </tr>`).join('');
+
+  const waMsg = encodeURIComponent(
+    'Assalam o Alaikum! Hoor Garments se order karna chahta/chahti hoon:\n\n' +
+    cart.map(i => `• ${i.name} x${i.qty} = Rs.${i.price*i.qty}`).join('\n') +
+    `\n\nTotal: Rs.${subtotal}\n\nPlease confirm availability. Shukriya! 🌙`
+  );
+
+  el.innerHTML = `
+    <div style="overflow-x:auto;margin-bottom:1.5rem">
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Product</th><th>Price</th><th>Qty</th><th>Total</th><th></th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="cart-summary">
+      <div class="cs-row"><span>Items (${cart.reduce((s,i)=>s+i.qty,0)})</span><span>Rs.${subtotal}</span></div>
+      <div class="cs-row"><span>Delivery</span><span style="color:var(--green);font-weight:700">Ask on WhatsApp</span></div>
+      <div class="cs-row total"><span>Total</span><span style="color:var(--pink)">Rs.${subtotal}</span></div>
+      <a href="https://wa.me/${WA}?text=${waMsg}" target="_blank" class="wa-order-btn">
+        <span class="wao-icon">📱</span> Order on WhatsApp
+      </a>
+      <button class="clear-btn" onclick="clearCart()">🗑️ Clear Cart</button>
+    </div>`;
+}
+
+function clearCart() {
+  cart = [];
+  updateCartCount();
+  renderCart();
+}
+
+// ════════════════════════════════════════════
+// RENDER PRODUCT CARD
+// ════════════════════════════════════════════
+function makeCard(p) {
+  const oldP = p.oldPrice ? `<span class="price-old">Rs.${p.oldPrice}</span>` : '';
+  const waMsg = encodeURIComponent(`Assalam o Alaikum! Mujhe yeh product chahiye:\n\n🛍️ ${p.name}\n💰 Price: Rs.${p.price}\n\nPlease confirm availability. Shukriya! 🌙`);
+  return `
+    <div class="pcard">
+      <div class="pimg" style="padding:0">
+        <img src="${p.image}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+      </div>
+      <div class="pinfo">
+        <div class="pname">${p.name}</div>
+        <div class="pmeta">${ageLabel(p.age)} · ${genderLabel(p.gender)}</div>
+        <div class="pfooter">
+          <div><span class="price">Rs.${p.price}</span>${oldP}</div>
+        </div>
+        <div class="btn-row">
+          <button class="add-btn" onclick="addToCart('${p.id}','${p.name}',${p.price})">🛒 Add</button>
+          <a class="wa-btn" href="https://wa.me/${WA}?text=${waMsg}" target="_blank">
+            <span class="wa-icon">📱</span> Order on WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>`;
+}
+
+function ageLabel(a){return{baby:'0–2 yrs',kids:'3–8 yrs',tween:'9–12 yrs'}[a]||a}
+function genderLabel(g){return{boy:'👦 Boys',girl:'👧 Girls',all:'👶 All'}[g]||g}
+
+// ════════════════════════════════════════════
+// FILTER STATE
+// ════════════════════════════════════════════
+const F = {
+  garments:   {age:'all',gender:'all',price:'all',sort:'default'},
+  toys:       {age:'all',gender:'all',price:'all',sort:'default'},
+  accessories:{age:'all',gender:'all',price:'all',sort:'default'},
+};
+const PR = {
+  garments:   {low:[0,500],   mid:[500,1000], high:[1000,99999]},
+  toys:       {low:[0,500],   mid:[500,1500], high:[1500,99999]},
+  accessories:{low:[0,300],   mid:[300,800],  high:[800,99999]},
+};
+
+function renderGrid(sec) {
+  const el = document.getElementById(sec+'Grid');
+  if(!el) return;
+  const f = F[sec];
+  let items = [...DATA[sec]];
+  if(f.age!=='all')    items=items.filter(p=>p.age===f.age);
+  if(f.gender!=='all') items=items.filter(p=>p.gender===f.gender||p.gender==='all');
+  if(f.price!=='all'){
+    const [lo,hi]=PR[sec][f.price];
+    items=items.filter(p=>p.price>=lo&&p.price<=hi);
+  }
+  if(f.sort==='lh') items.sort((a,b)=>a.price-b.price);
+  if(f.sort==='hl') items.sort((a,b)=>b.price-a.price);
+  el.innerHTML = items.length
+    ? items.map(makeCard).join('')
+    : `<div class="empty" style="grid-column:1/-1"><div class="ei">🔍</div><p>No products match. Try other filters!</p></div>`;
+}
+
+function setAge(sec,val,btn){
+  F[sec].age=val;
+  btn.closest('.age-tabs').querySelectorAll('.age-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid(sec);
+}
+function setGender(sec,val,btn){
+  F[sec].gender=val;
+  btn.closest('.gender-tabs').querySelectorAll('.gender-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid(sec);
+}
+function setPrice(sec,val,btn){
+  F[sec].price=val;
+  const btns=btn.closest('.filter-bar').querySelectorAll('.fl-btn');
+  btns.forEach((b,i)=>{if(i<5)b.classList.remove('active')});
+  btn.classList.add('active');
+  renderGrid(sec);
+}
+function setSort(sec,val,btn){
+  F[sec].sort=val;
+  const btns=btn.closest('.filter-bar').querySelectorAll('.fl-btn');
+  [btns[btns.length-3],btns[btns.length-2],btns[btns.length-1]].forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid(sec);
+}
+
+// ════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+  const nav=document.getElementById('nav-'+name);
+  if(nav) nav.classList.add('active');
+  if(name==='cart') renderCart();
+  else if(name!=='home') renderGrid(name);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════
+// SEARCH
+// ════════════════════════════════════════════
+function doSearch(q){
+  q=q.trim().toLowerCase();
+  const box=document.getElementById('sResults');
+  if(!q){box.innerHTML='';box.classList.remove('open');return}
+  const res=allProducts.filter(p=>
+    p.name.toLowerCase().includes(q)||
+    ageLabel(p.age).toLowerCase().includes(q)||
+    genderLabel(p.gender).toLowerCase().includes(q)
+  ).slice(0,8);
+  if(!res.length){
+    box.innerHTML=`<div class="sri"><span class="sri-em">🔍</span><div class="sri-info"><strong>No results</strong><span>Try another keyword</span></div></div>`;
+  } else {
+    box.innerHTML=res.map(p=>`
+      <div class="sri" onclick="goProduct('${p.category}')">
+        <img src="${p.image}" style="width:32px;height:32px;border-radius:8px;object-fit:cover">
+        <div class="sri-info"><strong>${p.name}</strong><span>Rs.${p.price} · ${ageLabel(p.age)}</span></div>
+      </div>`).join('');
+  }
+  box.classList.add('open');
+}
+function goProduct(cat){
+  closeSR();
+  document.getElementById('sInput').value='';
+  showPage(cat);
+}
+function openSR(){if(document.getElementById('sInput').value.trim())document.getElementById('sResults').classList.add('open')}
+function closeSR(){document.getElementById('sResults').classList.remove('open')}
+
+// ════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ════════════════════════════════════════════
+// HOME PAGE GRIDS
+// ════════════════════════════════════════════
+function renderHome(){
+  const el = document.getElementById('homeGrid');
+  el.innerHTML = allProducts.length
+    ? allProducts.slice(0,12).map(makeCard).join('')
+    : `<div class="empty" style="grid-column:1/-1"><div class="ei">📦</div><p>Abhi koi product nahi hai. Admin panel se add karein!</p></div>`;
+}
+
+// INIT
+loadProductsFromSupabase();
+</script>
+</body>
+</html>
